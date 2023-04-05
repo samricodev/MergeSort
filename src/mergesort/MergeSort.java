@@ -1,17 +1,17 @@
 package mergesort;
 
-import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.ForkJoinPool;
 import javax.swing.*;
 
 public class MergeSort extends JFrame {
 
     JButton btnLimpiar, btnMergeSort, btnGenerar, btnForkJoin, btnExecute;
-    JPanel canvaNorte, canvaSur, canvaEste, canvaOeste, canvaCentro;
-    JTextArea txtTam, txtInfo, txtInfo2;
-    JLabel info, merge, generar, msMerge, msFork;
-    JScrollPane scp, scp2;
+    JTextArea txtTam, txtInfo, txtInfo2, txtInfo3;
+    JLabel info, merge, generar, msMerge, msFork, msExec;
+    JScrollPane scp, scp2, scp3;
 
     public int nums[];
 
@@ -89,109 +89,114 @@ public class MergeSort extends JFrame {
     public void limpiar() {
         txtInfo.setText("");
         txtInfo2.setText("");
+        txtInfo3.setText("");
         txtTam.setText("");
         msFork.setText("");
         msMerge.setText("");
+        msExec.setText("");
     }
 
     public MergeSort() {
         setTitle("Merge Sort");
-        setSize(700, 700);
+        setSize(800, 800);
         setResizable(false);
-        setLayout(new BorderLayout());
+        setLayout(null);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-
-        canvaNorte = new JPanel();
-        canvaNorte.setBounds(100, 100, 300, 300);
-        canvaNorte.setLayout(new BorderLayout());
-        add("North", canvaNorte);
-
-        canvaSur = new JPanel();
-        canvaSur.setBounds(100, 100, 300, 300);
-        add("South", canvaSur);
-
-        canvaEste = new JPanel();
-        canvaEste.setBounds(100, 100, 300, 300);
-        canvaEste.setLayout(new BorderLayout());
-        add("East", canvaEste);
-
-        canvaOeste = new JPanel();
-        canvaOeste.setBounds(100, 100, 300, 300);
-        canvaOeste.setLayout(new BorderLayout());
-        add("West", canvaOeste);
-
-        canvaCentro = new JPanel();
-        canvaCentro.setBounds(100, 100, 300, 300);
-        canvaCentro.setLayout(new BorderLayout());
-        add("Center", canvaCentro);
-
-        generar = new JLabel("Generado");
-        generar.setBounds(100, 100, 100, 100);
-        canvaOeste.add("North", generar);
-
-        merge = new JLabel("Ordenado");
-        merge.setBounds(100, 100, 100, 100);
-        canvaEste.add("North", merge);
-
+        
         info = new JLabel("Ingresa el numero de datos a crear: ");
-        info.setBounds(100, 100, 100, 50);
-        canvaNorte.add("West", info);
+        info.setBounds(10, 10, 250, 20);
+        add(info);
 
         txtTam = new JTextArea();
-        txtTam.setBounds(100, 100, 100, 50);
-        canvaNorte.add("Center", txtTam);
+        txtTam.setBounds(250, 10, 100, 20);
+        add(txtTam);
 
+        generar = new JLabel("Generado");
+        generar.setBounds(10, 20, 100, 100);
+        add(generar);
+
+        merge = new JLabel("Ordenado");
+        merge.setBounds(500, 20, 100, 100);
+        add(merge);
+        
         txtInfo = new JTextArea();
-        txtInfo.setBounds(100, 100, 200, 50);
-        txtInfo.setLineWrap(true);
-        canvaOeste.add("Center", txtInfo);
+        add(txtInfo);
+        
+        scp = new JScrollPane(txtInfo);
+        scp.setBounds(10, 100, 200, 50);
+        add(scp);
 
         txtInfo2 = new JTextArea();
-        txtInfo2.setBounds(100, 100, 200, 50);
-        txtInfo2.setLineWrap(true);
-        canvaEste.add("Center", txtInfo2);
+        add(txtInfo2);
+        
+        scp2 = new JScrollPane(txtInfo2);
+        scp2.setBounds(500, 100, 200, 50);
+        add(scp2);
+        
+        txtInfo3 = new JTextArea();
+        add(txtInfo3);
+        
+        scp3 = new JScrollPane(txtInfo3);
+        scp3.setBounds(500, 250, 200, 50);
+        add(scp3);
 
         msMerge = new JLabel();
-        msMerge.setBounds(100, 100, 100, 100);
-        canvaCentro.add("Center", msMerge);
+        msMerge.setBounds(100, 400, 100, 100);
+        add(msMerge);
 
         msFork = new JLabel();
-        msFork.setBounds(100, 100, 100, 100);
-        canvaCentro.add("South", msFork);
+        msFork.setBounds(100, 450, 100, 100);
+        add(msFork);
+        
+        msExec = new JLabel();
+        msExec.setBounds(100, 500, 100, 100);
+        add(msExec);
 
         btnGenerar = new JButton("Generar");
-        btnGenerar.setBounds(100, 100, 100, 50);
+        btnGenerar.setBounds(10, 600, 100, 40);
         btnGenerar.addActionListener(e -> generarRandom());
-        canvaSur.add(btnGenerar);
+        add(btnGenerar);
 
         btnMergeSort = new JButton("MergeSort");
-        btnMergeSort.setBounds(100, 100, 100, 50);
+        btnMergeSort.setBounds(150, 600, 100, 40);
         btnMergeSort.addActionListener(e -> {
             long inicio = System.currentTimeMillis();
             ordenacionMergeSort(nums, 0, nums.length - 1);
             long fin = System.currentTimeMillis();
-            msMerge.setText("Merge: " + (fin - inicio) + " milisegundos");
+            msMerge.setText("Merge: " + (fin - inicio) + " ms");
             imprimirArray(nums, txtInfo2);
         });
-        canvaSur.add(btnMergeSort);
+        add(btnMergeSort);
 
         btnLimpiar = new JButton("Limpiar");
-        btnLimpiar.setBounds(100, 100, 100, 50);
+        btnLimpiar.setBounds(300, 600, 100, 40);
         btnLimpiar.addActionListener(e -> limpiar());
-        canvaSur.add(btnLimpiar);
+        add(btnLimpiar);
 
         btnForkJoin = new JButton("ForkJoin");
-        btnForkJoin.setBounds(100, 100, 100, 50);
+        btnForkJoin.setBounds(450, 600, 100, 40);
         btnForkJoin.addActionListener((ActionEvent e) -> {
             ForkJoinPool fjPool = new ForkJoinPool();
             long inicio = System.currentTimeMillis();
             fjPool.invoke(new ForkJoin(nums, 0, nums.length - 1));
             long fin = System.currentTimeMillis();
-            msFork.setText("ForkJoin: " + (fin - inicio) + " milisegundos");
+            msFork.setText("ForkJoin: " + (fin - inicio) + " ms");
             imprimirArray(nums, txtInfo2);
         });
-        canvaSur.add(btnForkJoin);
+        add(btnForkJoin);
+        
+        btnExecute = new JButton("Executor");
+        btnExecute.setBounds(600,600,100,40);
+        btnExecute.addActionListener( e -> {
+            ExecutorService executor = Executors.newFixedThreadPool(2);
+            long inicio = System.currentTimeMillis();
+            executor.execute(new ExeServ(nums, 0, nums.length - 1));
+            long fin = System.currentTimeMillis();
+            msExec.setText("Executor: " + (fin - inicio) + " ms");
+            imprimirArray(nums, txtInfo3);
+        });
+        add(btnExecute);
     }
 
     public static void main(String[] args) {
