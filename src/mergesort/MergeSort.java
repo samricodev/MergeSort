@@ -9,9 +9,9 @@ import javax.swing.*;
 public class MergeSort extends JFrame {
 
     JButton btnLimpiar, btnMergeSort, btnGenerar, btnForkJoin, btnExecute;
-    JTextArea txtTam, txtInfo, txtInfo2, txtInfo3;
-    JLabel info, merge, generar, msMerge, msFork, msExec;
-    JScrollPane scp, scp2, scp3;
+    JTextArea txtTam, txtInfo, txtInfo2, txtInfo3, txtInfo4;
+    JLabel info, merge, generar, msMerge, msFork, msExec, tiempos;
+    JScrollPane scp, scp2, scp3, scp4;
 
     public int nums[];
 
@@ -90,6 +90,7 @@ public class MergeSort extends JFrame {
         txtInfo.setText("");
         txtInfo2.setText("");
         txtInfo3.setText("");
+        txtInfo4.setText("");
         txtTam.setText("");
         msFork.setText("");
         msMerge.setText("");
@@ -98,7 +99,7 @@ public class MergeSort extends JFrame {
 
     public MergeSort() {
         setTitle("Merge Sort");
-        setSize(800, 800);
+        setSize(800, 500);
         setResizable(false);
         setLayout(null);
         setLocationRelativeTo(null);
@@ -115,6 +116,10 @@ public class MergeSort extends JFrame {
         generar = new JLabel("Generado");
         generar.setBounds(10, 20, 100, 100);
         add(generar);
+        
+        tiempos = new JLabel("Tiempo de ejecucion: ");
+        tiempos.setBounds(10, 150, 150, 100);
+        add(tiempos);
 
         merge = new JLabel("Ordenado");
         merge.setBounds(500, 20, 100, 100);
@@ -138,63 +143,71 @@ public class MergeSort extends JFrame {
         add(txtInfo3);
         
         scp3 = new JScrollPane(txtInfo3);
-        scp3.setBounds(500, 250, 200, 50);
+        scp3.setBounds(500, 200, 200, 50);
         add(scp3);
+        
+        txtInfo4 = new JTextArea();
+        add(txtInfo4);
+        
+        scp4 = new JScrollPane(txtInfo4);
+        scp4.setBounds(500, 300, 200, 50);
+        add(scp4);
 
         msMerge = new JLabel();
-        msMerge.setBounds(100, 400, 100, 100);
+        msMerge.setBounds(40, 175, 100, 100);
         add(msMerge);
 
         msFork = new JLabel();
-        msFork.setBounds(100, 450, 100, 100);
+        msFork.setBounds(40, 200, 100, 100);
         add(msFork);
         
         msExec = new JLabel();
-        msExec.setBounds(100, 500, 100, 100);
+        msExec.setBounds(40, 225, 100, 100);
         add(msExec);
 
         btnGenerar = new JButton("Generar");
-        btnGenerar.setBounds(10, 600, 100, 40);
+        btnGenerar.setBounds(50, 400, 100, 40);
         btnGenerar.addActionListener(e -> generarRandom());
         add(btnGenerar);
 
         btnMergeSort = new JButton("MergeSort");
-        btnMergeSort.setBounds(150, 600, 100, 40);
+        btnMergeSort.setBounds(185, 400, 100, 40);
         btnMergeSort.addActionListener(e -> {
             long inicio = System.currentTimeMillis();
             ordenacionMergeSort(nums, 0, nums.length - 1);
             long fin = System.currentTimeMillis();
-            msMerge.setText("Merge: " + (fin - inicio) + " ms");
+            msMerge.setText("º Merge: " + (fin - inicio) + " ms");
             imprimirArray(nums, txtInfo2);
         });
         add(btnMergeSort);
 
         btnLimpiar = new JButton("Limpiar");
-        btnLimpiar.setBounds(300, 600, 100, 40);
+        btnLimpiar.setBounds(600, 400, 100, 40);
         btnLimpiar.addActionListener(e -> limpiar());
         add(btnLimpiar);
 
         btnForkJoin = new JButton("ForkJoin");
-        btnForkJoin.setBounds(450, 600, 100, 40);
+        btnForkJoin.setBounds(320, 400, 100, 40);
         btnForkJoin.addActionListener((ActionEvent e) -> {
             ForkJoinPool fjPool = new ForkJoinPool();
             long inicio = System.currentTimeMillis();
             fjPool.invoke(new ForkJoin(nums, 0, nums.length - 1));
             long fin = System.currentTimeMillis();
-            msFork.setText("ForkJoin: " + (fin - inicio) + " ms");
-            imprimirArray(nums, txtInfo2);
+            msFork.setText("º ForkJoin: " + (fin - inicio) + " ms");
+            imprimirArray(nums, txtInfo3);
         });
         add(btnForkJoin);
         
         btnExecute = new JButton("Executor");
-        btnExecute.setBounds(600,600,100,40);
+        btnExecute.setBounds(460,400,100,40);
         btnExecute.addActionListener( e -> {
             ExecutorService executor = Executors.newFixedThreadPool(2);
             long inicio = System.currentTimeMillis();
             executor.execute(new ExeServ(nums, 0, nums.length - 1));
             long fin = System.currentTimeMillis();
-            msExec.setText("Executor: " + (fin - inicio) + " ms");
-            imprimirArray(nums, txtInfo3);
+            msExec.setText("º Executor: " + (fin - inicio) + " ms");
+            imprimirArray(nums, txtInfo4);
+            executor.shutdown();
         });
         add(btnExecute);
     }
